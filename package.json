@@ -7,5 +7,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.7.1"
+  "packageManager": "pnpm@10.7.1",
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "sample-lib": "link:apps/libs/sample-lib"
+    }
+  },
+  "dependencies": {
+    "sample-lib": "link:apps/libs/sample-lib"
+  }
 }
