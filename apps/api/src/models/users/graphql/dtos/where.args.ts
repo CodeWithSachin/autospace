@@ -4,7 +4,7 @@ import {
   RestrictProperties,
   StringFilter,
 } from 'src/common/dtos/common.input'
-import { Prisma } from 'src/generated/client'
+import { Prisma } from '@prisma/client'
 
 @InputType()
 export class UserWhereUniqueInput {
