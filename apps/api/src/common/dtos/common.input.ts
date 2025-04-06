@@ -6,7 +6,7 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql'
-import { Prisma } from '@prisma/client'
+import { Prisma } from 'src/generated/client'
 
 export type RestrictProperties<T, U> = {
   [K in keyof T]: K extends keyof U ? T[K] : never

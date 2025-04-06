@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   CanActivate,
   ExecutionContext,
@@ -36,8 +41,21 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const user = await this.jwtService.verify(token)
-      req.user = user
+      const payload = await this.jwtService.verify(token)
+
+      const uid = payload.uid
+      if (!uid) {
+        throw new UnauthorizedException(
+          'Invalid token. No uid present in the token',
+        )
+      }
+      const user = await this.prisma.user.findUnique({ where: { uid } })
+      if (!user) {
+        throw new UnauthorizedException(
+          'Invalid token. No uid present in the token',
+        )
+      }
+      req.user = payload
     } catch (err) {
       console.error('Token validation error:', err)
     }

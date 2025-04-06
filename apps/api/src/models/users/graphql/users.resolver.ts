@@ -2,7 +2,12 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
 import { UsersService } from './users.service'
 import { User } from './entity/user.entity'
 import { FindManyUserArgs, FindUniqueUserArgs } from './dtos/find.args'
-import { CreateUserInput } from './dtos/create-user.input'
+import {
+  LoginInput,
+  LoginOutput,
+  RegisterWithCredentialInput,
+  RegisterWithProviderInput,
+} from './dtos/create-user.input'
 import { UpdateUserInput } from './dtos/update-user.input'
 import { checkRowLevelPermission } from 'src/common/auth/util'
 import { GetUserType } from 'src/common/types'
@@ -16,14 +21,29 @@ export class UsersResolver {
     private readonly prisma: PrismaService,
   ) {}
 
-  @AllowAuthenticated()
   @Mutation(() => User)
-  createUser(
-    @Args('createUserInput') args: CreateUserInput,
-    @GetUser() user: GetUserType,
+  async registerWithCredential(
+    @Args('RegisterWithCredentialInput') args: RegisterWithCredentialInput,
   ) {
-    checkRowLevelPermission(user, args.uid)
-    return this.usersService.create(args)
+    return await this.usersService.registerWithCredential(args)
+  }
+
+  @Mutation(() => User)
+  async registerWithProvider(
+    @Args('RegisterWithProviderInput') args: RegisterWithProviderInput,
+  ) {
+    return await this.usersService.registerWithProvider(args)
+  }
+
+  @Mutation(() => LoginOutput)
+  async login(@Args('loginInput') args: LoginInput) {
+    return await this.usersService.login(args)
+  }
+
+  @AllowAuthenticated()
+  @Query(() => User)
+  whoami(@GetUser() user: GetUserType) {
+    return this.usersService.findOne({ where: { uid: user.uid } })
   }
 
   @Query(() => [User], { name: 'users' })
